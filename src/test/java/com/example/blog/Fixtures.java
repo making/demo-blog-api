@@ -1,4 +1,4 @@
-package com.example.blog.entry;
+package com.example.blog;
 
 import am.ik.blog.entry.*;
 
