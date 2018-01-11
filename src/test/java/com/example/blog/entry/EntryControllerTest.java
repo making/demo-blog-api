@@ -19,7 +19,9 @@ import java.util.Optional;
 import static org.mockito.BDDMockito.given;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = "spring.flyway.enabled=false")
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = {
+		"spring.flyway.enabled=false", "blog.github.access-token=foo",
+		"blog.github.webhook-secret=bar" })
 public class EntryControllerTest {
 	@Autowired
 	ApplicationContext context;
