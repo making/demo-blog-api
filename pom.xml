@@ -28,7 +28,7 @@
         <dependency>
             <groupId>am.ik.blog</groupId>
             <artifactId>blog-domain</artifactId>
-            <version>4.3.1</version>
+            <version>4.3.3</version>
         </dependency>
         <dependency>
             <groupId>am.ik.github</groupId>

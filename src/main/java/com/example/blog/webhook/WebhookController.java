@@ -1,5 +1,12 @@
 package com.example.blog.webhook;
 
+import java.nio.file.Paths;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.util.Collections;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
+
 import am.ik.blog.entry.Entry;
 import am.ik.blog.entry.EntryId;
 import com.example.blog.BlogProperties;
@@ -8,21 +15,15 @@ import com.example.blog.entry.event.EntryDeleteEvent;
 import com.example.blog.entry.event.EntryUpdateEvent;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import reactor.core.publisher.Flux;
+import reactor.core.scheduler.Schedulers;
+
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
-import reactor.core.publisher.Flux;
-import reactor.core.scheduler.Schedulers;
-
-import java.nio.file.Paths;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.util.Collections;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
 @RestController
 public class WebhookController {
@@ -65,8 +66,7 @@ public class WebhookController {
 					.doOnNext(e -> this.publisher.publishEvent(new EntryUpdateEvent(e))) //
 					.map(Entry::entryId);
 			Flux<EntryId> removed = this.paths(commit.get("removed")) //
-					.map(path -> EntryId
-							.fromFileName(Paths.get(path).getFileName().toString())) //
+					.map(path -> EntryId.fromFilePath(Paths.get(path))) //
 					.publishOn(Schedulers.fromExecutor(this.taskExecutor)) //
 					.doOnNext(entryId -> this.publisher
 							.publishEvent(new EntryDeleteEvent(entryId)));

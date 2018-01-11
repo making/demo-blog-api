@@ -1,5 +1,8 @@
 package com.example.blog.webhook;
 
+import java.nio.file.Paths;
+import java.util.Optional;
+
 import am.ik.blog.entry.*;
 import am.ik.blog.entry.Entry.EntryBuilder;
 import am.ik.blog.entry.factory.EntryFactory;
@@ -7,14 +10,12 @@ import am.ik.github.GitHubClient;
 import am.ik.github.core.Committer;
 import am.ik.github.repositories.commits.CommitsResponse.Commit;
 import am.ik.github.repositories.contents.ContentsResponse.File;
-import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.util.function.Tuple2;
 import reactor.util.function.Tuples;
 
-import java.nio.file.Paths;
-import java.util.Optional;
+import org.springframework.stereotype.Component;
 
 @Component
 public class EntryFetcher {
@@ -25,7 +26,7 @@ public class EntryFetcher {
 	}
 
 	public Mono<Entry> fetch(String owner, String repo, String path) {
-		EntryId entryId = EntryId.fromFileName(Paths.get(path).getFileName().toString());
+		EntryId entryId = EntryId.fromFilePath(Paths.get(path));
 		Mono<File> file = this.gitHubClient.file(owner, repo, path).get();
 		Flux<Commit> commits = this.gitHubClient.commits(owner, repo)
 				.get(p -> p.path(path));

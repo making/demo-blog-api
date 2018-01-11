@@ -1,18 +1,19 @@
 package com.example.blog.entry;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import am.ik.blog.entry.*;
+import reactor.util.function.Tuple2;
+import reactor.util.function.Tuples;
+
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import reactor.util.function.Tuple2;
-import reactor.util.function.Tuples;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.stream.Collectors.*;
 
@@ -39,9 +40,8 @@ public class EntryRepository {
 							"SELECT tag_name FROM entry_tag WHERE entry_id = :entry_id",
 							source, (rs, i) -> new Tag(rs.getString("tag_name")));
 					FrontMatter fm = e.getFrontMatter();
-					return e.copy()
-							.frontMatter(new FrontMatter(fm.title(), fm.categories(),
-									new Tags(tags), fm.date(), fm.updated(), fm.point()))
+					return e.copy().frontMatter(new FrontMatter(fm.title(),
+							fm.categories(), new Tags(tags), fm.date(), fm.updated()))
 							.build();
 				});
 	}
@@ -65,8 +65,7 @@ public class EntryRepository {
 					FrontMatter fm = e.getFrontMatter();
 					return e.copy()
 							.frontMatter(new FrontMatter(fm.title(), fm.categories(),
-									tagsMap.get(e.getEntryId()), fm.date(), fm.updated(),
-									fm.point()))
+									tagsMap.get(e.getEntryId()), fm.date(), fm.updated()))
 							.build();
 				}) //
 				.collect(toList());

@@ -1,18 +1,18 @@
 package com.example.blog.entry;
 
-import am.ik.blog.entry.*;
-import am.ik.blog.entry.Entry.EntryBuilder;
-import org.springframework.jdbc.core.ResultSetExtractor;
-import org.springframework.util.StringUtils;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+
+import am.ik.blog.entry.*;
+import am.ik.blog.entry.Entry.EntryBuilder;
+
+import org.springframework.jdbc.core.ResultSetExtractor;
+import org.springframework.util.StringUtils;
 
 class EntryExtractors {
 	static ResultSetExtractor<Optional<Entry>> forEntry() {
@@ -54,7 +54,7 @@ class EntryExtractors {
 				}
 				while (rs.next());
 				if (builder != null) {
-				    // for last loop
+					// for last loop
 					entries.add(builder.build());
 				}
 			}
@@ -72,8 +72,8 @@ class EntryExtractors {
 				.entryId(new EntryId(rs.getLong("entry_id"))) //
 				.content(new Content(rs.getString("content"))) //
 				.frontMatter(new FrontMatter(new Title(rs.getString("title")),
-						new Categories(categories), new Tags(Collections.emptyList()),
-						createdDate, lastModifiedDate, null)) //
+						new Categories(categories), new Tags(), createdDate,
+						lastModifiedDate)) //
 				.created(new Author(new Name(rs.getString("created_by")), createdDate)) //
 				.updated(new Author(new Name(rs.getString("last_modified_by")),
 						lastModifiedDate));
