@@ -98,13 +98,16 @@ public class EntryRepository {
 				"UPDATE entry SET title=:title, content=:content, created_by=:created_by, created_date=:created_date, last_modified_by=:last_modified_by, last_modified_date=:last_modified_date"
 						+ " WHERE  entry_id = :entry_id",
 				entrySource);
-		this.jdbcTemplate.batchUpdate(
-				"UPDATE category SET category_order=:category_order, category_name=:category_name"
-						+ " WHERE entry_id = :entry_id",
+		this.jdbcTemplate.batchUpdate("DELETE FROM category WHERE entry_id = :entry_id",
+				categorySources);
+		this.jdbcTemplate.batchUpdate("DELETE FROM entry_tag WHERE entry_id = :entry_id",
 				categorySources);
 		this.jdbcTemplate.batchUpdate(
-				"UPDATE entry_tag SET tag_name=:tag_name  WHERE entry_id = :entry_id",
-				tagSources);
+				"INSERT INTO category(category_order, entry_id, category_name)"
+						+ " VALUES(:category_order, :entry_id, :category_name)",
+				categorySources);
+		this.jdbcTemplate.batchUpdate("INSERT INTO entry_tag(entry_id, tag_name)"
+				+ " VALUES(:entry_id, :tag_name)", tagSources);
 	}
 
 	@Transactional
