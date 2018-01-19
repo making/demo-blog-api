@@ -29,8 +29,8 @@ public class DemoInserter implements CommandLineRunner {
 		Tags tags = new Tags(new Tag("a"), new Tag("b"), new Tag("c"));
 		return Entry.builder() //
 				.entryId(entryId) //
-				.content(new Content("Hello " + entryId)) //
-				.frontMatter(new FrontMatter(new Title("Hello " + entryId), categories,
+				.content(new Content("- Hello " + entryId)) //
+				.frontMatter(new FrontMatter(new Title("Entry " + entryId), categories,
 						tags, now, now)) //
 				.created(new Author(new Name("demo"), now)) //
 				.updated(new Author(new Name("demo"), now)) //
