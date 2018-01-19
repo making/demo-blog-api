@@ -1,0 +1,34 @@
+= Blog API
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+
+
+== 記事一覧取得
+
+=== リクエスト例
+
+include::{snippets}/get-entries/http-request.adoc[]
+
+``curl``の場合
+
+include::{snippets}/get-entries/curl-request.adoc[]
+
+=== レスポンス例
+
+include::{snippets}/get-entries/http-response.adoc[]
+
+
+== 記事1件取得
+
+=== リクエスト例
+
+include::{snippets}/get-entry/http-request.adoc[]
+
+``curl``の場合
+
+include::{snippets}/get-entry/curl-request.adoc[]
+
+=== レスポンス例
+
+include::{snippets}/get-entry/http-response.adoc[]

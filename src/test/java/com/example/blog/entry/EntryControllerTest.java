@@ -6,6 +6,7 @@ import java.util.Optional;
 import am.ik.blog.entry.EntryId;
 import com.example.blog.Fixtures;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -13,10 +14,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.JUnitRestDocumentation;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 import static org.mockito.BDDMockito.given;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
+import static org.springframework.restdocs.webtestclient.WebTestClientRestDocumentation.document;
+import static org.springframework.restdocs.webtestclient.WebTestClientRestDocumentation.documentationConfiguration;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = {
@@ -28,11 +33,16 @@ public class EntryControllerTest {
 	WebTestClient webClient;
 	@MockBean
 	EntryRepository entryRepository;
+	@Rule
+	public JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation();
 
 	@Before
 	public void setup() {
 		this.webClient = WebTestClient.bindToServer() //
 				.baseUrl("http://localhost:" + port) //
+				.filter(documentationConfiguration(this.restDocumentation)
+						.operationPreprocessors() //
+						.withResponseDefaults(prettyPrint())) //
 				.build();
 	}
 
@@ -80,7 +90,8 @@ public class EntryControllerTest {
 				.jsonPath("frontMatter.tags").isArray() //
 				.jsonPath("frontMatter.tags[0]").isEqualTo("a") //
 				.jsonPath("frontMatter.tags[1]").isEqualTo("b") //
-				.jsonPath("frontMatter.tags[2]").isEqualTo("c");
+				.jsonPath("frontMatter.tags[2]").isEqualTo("c") //
+				.consumeWith(document("get-entry"));
 	}
 
 	@Test
@@ -113,7 +124,8 @@ public class EntryControllerTest {
 				.jsonPath("$[0].frontMatter.tags").isArray() //
 				.jsonPath("$[0].frontMatter.tags[0]").isEqualTo("a") //
 				.jsonPath("$[0].frontMatter.tags[1]").isEqualTo("b") //
-				.jsonPath("$[0].frontMatter.tags[2]").isEqualTo("c");
+				.jsonPath("$[0].frontMatter.tags[2]").isEqualTo("c") //
+				.consumeWith(document("get-entries"));
 	}
 
 }
